@@ -38,5 +38,22 @@ def get_earthquake(id):
         return jsonify({"message": f"Earthquake {id} not found."}), 404
 
 
+@app.route('/earthquakes/magnitude/<float:magnitude>')
+def get_earthquakes_by_magnitude(magnitude):
+    quakes = Earthquake.query.filter(Earthquake.magnitude >= magnitude).all()
+
+    quake_list = [{
+        "id": q.id,
+        "location": q.location,
+        "magnitude": q.magnitude,
+        "year": q.year
+    } for q in quakes]
+
+    return jsonify({
+        "count": len(quake_list),
+        "quakes": quake_list
+    }), 200
+
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
